@@ -1,3 +1,4 @@
+USE `sortir_lesroux`;
 CREATE PROCEDURE archive_sortie()
 BEGIN
    UPDATE `sortie`
@@ -9,6 +10,20 @@ END;
 CREATE TRIGGER trg_update_sortie
 AFTER UPDATE ON `sortie`
 FOR EACH ROW
+BEGIN
+    CALL archive_sortie();
+END;
+
+CREATE TRIGGER trg_create_sortie
+    AFTER INSERT ON `sortie`
+    FOR EACH ROW
+BEGIN
+    CALL archive_sortie();
+END;
+
+CREATE TRIGGER trg_delete_sortie
+    AFTER DELETE ON `sortie`
+    FOR EACH ROW
 BEGIN
     CALL archive_sortie();
 END;
