@@ -63,6 +63,11 @@ class Sortie
      */
     private $lieu;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $archivee;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -172,6 +177,18 @@ class Sortie
     public function setLieu(?Lieu $lieu): self
     {
         $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function isArchivee(): ?bool
+    {
+        return $this->archivee;
+    }
+
+    public function setArchivee(bool $archivee): self
+    {
+        $this->archivee = $archivee;
 
         return $this;
     }
