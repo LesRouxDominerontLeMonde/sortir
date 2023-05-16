@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -67,6 +69,28 @@ class Sortie
      * @ORM\Column(type="boolean")
      */
     private $archivee;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="organise_sortie")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $organisateur;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="inscrit")
+     */
+    private $participants;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus_origine;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -189,6 +213,57 @@ class Sortie
     public function setArchivee(bool $archivee): self
     {
         $this->archivee = $archivee;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?User
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?User $organisateur): self
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(User $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+            $participant->addInscrit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(User $participant): self
+    {
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeInscrit($this);
+        }
+
+        return $this;
+    }
+
+    public function getCampusOrigine(): ?Campus
+    {
+        return $this->campus_origine;
+    }
+
+    public function setCampusOrigine(?Campus $campus_origine): self
+    {
+        $this->campus_origine = $campus_origine;
 
         return $this;
     }
