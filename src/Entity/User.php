@@ -39,11 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $idUser;
 
-    /**
-     * @ORM\Column(type="string", length=30)
-     */
     private $name;
 
     /**
@@ -59,16 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $mail;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $passw;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
     private $administrator;
 
     /**
