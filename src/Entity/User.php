@@ -52,10 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $phoneNumber;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
     private $administrator;
 
     /**
