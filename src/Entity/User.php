@@ -152,17 +152,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getIdUser(): ?int
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(int $idUser): self
-    {
-        $this->idUser = $idUser;
-
-        return $this;
-    }
 
     public function getName(): ?string
     {
@@ -200,29 +189,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMail(): ?string
-    {
-        return $this->mail;
-    }
-
-    public function setMail(string $mail): self
-    {
-        $this->mail = $mail;
-
-        return $this;
-    }
-
-    public function getPassw(): ?string
-    {
-        return $this->passw;
-    }
-
-    public function setPassw(string $passw): self
-    {
-        $this->passw = $passw;
-
-        return $this;
-    }
 
     public function isAdministrator(): ?bool
     {
