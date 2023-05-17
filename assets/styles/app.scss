@@ -1,1 +1,12 @@
 @import "~bootstrap/scss/bootstrap";
+
+label{
+  display: block;
+}
+
+input, textarea, select{
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  width: 150px;
+  max-width: 50%;
+}
