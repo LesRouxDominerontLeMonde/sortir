@@ -20,15 +20,14 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             for($j=0;$j<5;$j++) {
                 $users =new User();
                 $fname = $faker->firstName();
-                $name = $faker->name();
-                $mail = "${name}.${fname}@".$faker->safeEmailDomain();
+                $lname = $faker->lastName();
+                $mail = preg_replace('/\s/', '_', $lname.$fname)."@".$faker->safeEmailDomain();
                 $users->setCampus($this->getReference('campus_'.$j));
                 $users->setActif(true)
-                    ->setAdministrator(false)
                     ->setEmail($mail)
-                    ->setName($name)
+                    ->setName($lname)
                     ->setFirstname($fname)
-                    ->setPseudo("pseudo_$i")
+                    ->setPseudo("pseudo_".$i."_$j")
                     ->setPassword('password');
                 $manager->persist($users);
                 $this->addReference('users_'.$i.'_c_'.$j, $users);
