@@ -33,9 +33,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 $this->addReference('users_'.$i.'_c_'.$j, $users);
             }
 
-
-
-
         }
         $manager->flush();
     }
