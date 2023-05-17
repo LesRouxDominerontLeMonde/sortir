@@ -79,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $inscrit;
 
     /**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, unique=true)
      */
     private $pseudo;
 
