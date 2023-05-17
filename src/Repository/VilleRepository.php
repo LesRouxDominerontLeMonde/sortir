@@ -40,7 +40,7 @@ class VilleRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Ville[] Returns an array of Ville objects
+//     * @return VilleFixtures[] Returns an array of VilleFixtures objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class VilleRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Ville
+//    public function findOneBySomeField($value): ?VilleFixtures
 //    {
 //        return $this->createQueryBuilder('v')
 //            ->andWhere('v.exampleField = :val')

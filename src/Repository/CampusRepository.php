@@ -40,7 +40,7 @@ class CampusRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Campus[] Returns an array of Campus objects
+//     * @return CampusFixtures[] Returns an array of CampusFixtures objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CampusRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Campus
+//    public function findOneBySomeField($value): ?CampusFixtures
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

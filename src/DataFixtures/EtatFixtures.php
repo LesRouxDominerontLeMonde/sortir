@@ -12,6 +12,7 @@ class EtatFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
+        $i = 0;
         foreach ([
             'Créée',
             'Ouverte',
@@ -23,6 +24,8 @@ class EtatFixtures extends Fixture
             $etat = new Etat();
             $etat->setLibelle($v);
             $manager->persist($etat);
+            $this->addReference('etat'.$i, $etat);
+            $i++;
         }
         $manager->flush();
     }
