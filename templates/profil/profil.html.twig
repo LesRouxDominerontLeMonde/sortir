@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfilController!{% endblock %}
+{% block title %}Profil de  {{ app.user.pseudo }}!{% endblock %}
 
 {% block body %}
 <style>
@@ -9,6 +9,9 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ app.user.pseudo}} ! ✅</h1>
+    <h1>{{ app.user.pseudo}} </h1>
 </div>
+
+
+
 {% endblock %}
