@@ -24,7 +24,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 $mail = "${name}.${fname}@".$faker->safeEmailDomain();
                 $users->setCampus($this->getReference('campus_'.$j));
                 $users->setActif(true)
-                    ->setAdministrator(false)
                     ->setEmail($mail)
                     ->setName($name)
                     ->setFirstname($fname)
@@ -33,9 +32,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($users);
                 $this->addReference('users_'.$i.'_c_'.$j, $users);
             }
-
-
-
 
         }
         $manager->flush();
