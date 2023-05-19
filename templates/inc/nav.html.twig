@@ -7,7 +7,8 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 {% if app.user %}
-                <a class="nav-link" href="#">Mon Profil</a>
+                <a class="nav-link" href="{{  path('app_home') }}">Acceuil</a>
+                <a class="nav-link" href="{{  path('app_profil') }}">Mon Profil</a>
                 <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
                    {#  {% if app.user.admin %}
                    <a class="nav-link" href="#">Villes</a>
