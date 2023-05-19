@@ -54,6 +54,10 @@ class EtatRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+    public function findByName(string $name): ?Etat
+    {
+        return $this->findOneBy(['libelle' => $name]);
+    }
 //    public function findOneBySomeField($value): ?Etat
 //    {
 //        return $this->createQueryBuilder('e')
