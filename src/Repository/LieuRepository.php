@@ -38,6 +38,17 @@ class LieuRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findUniqueCities()
+    {
+        return $this->createQueryBuilder('l')
+            ->select('nom')
+            ->distinct()
+            ->from('App\Entity\Lieu', 'lieu')
+            ->leftJoin('lieu.ville', 'ville')
+            ->addSelect('ville.nom AS villeNom')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return LieuFixtures[] Returns an array of LieuFixtures objects

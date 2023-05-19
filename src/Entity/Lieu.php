@@ -119,6 +119,10 @@ class Lieu
 
         return $this;
     }
+    public function getVilleLabel(): string
+    {
+        return $this->ville->getNom();
+    }
 
     /**
      * @return Collection<int, Sortie>

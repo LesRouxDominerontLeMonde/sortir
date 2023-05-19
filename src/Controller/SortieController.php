@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\User;
 use App\Form\SortieFormType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +17,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SortieController extends AbstractController
 {
+    private $managerRegistry;
+
+    public function __construct(ManagerRegistry $managerRegistry)
+    {
+        $this->managerRegistry = $managerRegistry;
+    }
+
     /**
      * @Route("/sortie", name="app_sortie")
      */
@@ -39,10 +49,18 @@ class SortieController extends AbstractController
     public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sortie = new Sortie();
-        $form = $this->createForm(SortieFormType::class, $sortie);
+        $etat = $this->managerRegistry->getRepository(Etat::class)->find(1);
+        $uniqueCities = $entityManager->getRepository(Lieu::class)->findUniqueCities();
+        $user = $this->getUser();
+        $form = $this->createForm(SortieFormType::class, $sortie, [
+            'unique_cities' => $uniqueCities ]);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()){
             $sortie->setCreatedAt(new \DateTimeImmutable());
+            $sortie->setArchivee(false);
+            $sortie->setEtat($etat);
+            $sortie->setOrganisateur($user);
             $entityManager->persist($sortie);
             $entityManager->flush();
         }

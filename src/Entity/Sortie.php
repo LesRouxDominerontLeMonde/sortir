@@ -46,7 +46,7 @@ class Sortie
 
     /**
      * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="etat_id", referencedColumnName="id")
      */
     private $etat;
 
@@ -56,7 +56,7 @@ class Sortie
     private $created_at;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $updated_at;
 
