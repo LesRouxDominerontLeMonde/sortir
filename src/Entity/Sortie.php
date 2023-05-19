@@ -87,6 +87,11 @@ class Sortie
      */
     private $campus_origine;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -264,6 +269,18 @@ class Sortie
     public function setCampusOrigine(?Campus $campus_origine): self
     {
         $this->campus_origine = $campus_origine;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
