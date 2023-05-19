@@ -34,7 +34,7 @@ class SortieController extends AbstractController
     ]);
 }
     /**
-     * @Route("/sortie/create", name="app_sortie_create)
+     * @Route("/sortie/create", name="app_sortie_create")
      */
     public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -50,11 +50,10 @@ class SortieController extends AbstractController
         return $this->render('sortie/create.html.twig', [
             'form'=>$form->createView()
         ]);
-
     }
 
     /**
-     * @Route("/sortie/edit/{id}, name="app_sortie_edit", requirements={"id"="\d+"})
+     * @Route("/sortie/edit/{id}", name="app_sortie_edit", requirements={"id"="\d+"})
      */
     public function editSortie(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
@@ -65,7 +64,6 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/delete/{id}", name="app_sortie_delete", requirements={"id"="\d+"})
      */
-
     public function deleteSortie(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         // TODO : Code pour récupérer l'item à supprimer et renvoyer une 404 si paq ok
