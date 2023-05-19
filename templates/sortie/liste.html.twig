@@ -28,7 +28,10 @@
         <td>{{ sortie.etat.libelle }}</td>
         <td>???</td>
         <td>{{ sortie.organisateur.pseudo  }}</td>
-        <td>???</td>
+        <td>
+            {{ if app.user.id == sortie.organisateur.id || is_granted('ROLE_ADMIN') }}
+            <a href="{{ path(app_sortie_edit) }}">Modifier</a>&nbsp;<a href="{{ path(app_sortie_delete) }}">Supprimer</a>
+        </td>
     </tr>
     </tbody>
     {% endfor %}
