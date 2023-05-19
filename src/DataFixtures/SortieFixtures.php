@@ -37,7 +37,8 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
                     ->addParticipant($this->getReference("users_2_c_$c"))
                     ->setEtat($this->getReference("etat_${rnd_etat}"))
                     ->setCreatedAt(new \DateTimeImmutable())
-                    ->setUpdatedAt(new \DateTimeImmutable());
+                    ->setUpdatedAt(new \DateTimeImmutable())
+                    ->setDescription($faker->text());
 
                 $manager->persist($sortie);
 
