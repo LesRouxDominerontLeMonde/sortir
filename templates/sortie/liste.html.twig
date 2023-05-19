@@ -23,8 +23,8 @@
     <tr>
         <td>{{ sortie.nom }}</td>
         <td>{{ sortie.debut | date('d/m/Y') }}</td>
-        <td>{{ sortie.finInscription | date('d/m/Y')}}</td>
-        <td>???/{{ sortie.inscriptionsMax }}</td>
+        <td>{{ sortie.dateFin | date('d/m/Y')}}</td>
+        <td>{{ sortie.nbInscrits }}/{{ sortie.inscriptionsMax }}</td>
         <td>{{ sortie.etat.libelle }}</td>
         <td>???</td>
         <td>{{ sortie.organisateur.pseudo  }}</td>

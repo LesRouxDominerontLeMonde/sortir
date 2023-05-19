@@ -267,4 +267,13 @@ class Sortie
 
         return $this;
     }
+
+    public function nbInscrits(): int {
+        return sizeof($this->participants->toArray());
+    }
+
+    public function dateFin(): \DateTimeInterface {
+        return date_add($this->debut, $this->fin_inscription);
+
+    }
 }
