@@ -26,7 +26,14 @@
         <td>{{ sortie.dateFin | date('d/m/Y')}}</td>
         <td>{{ sortie.nbInscrits }}/{{ sortie.inscriptionsMax }}</td>
         <td>{{ sortie.etat.libelle }}</td>
-        <td>???</td>
+        <td>
+            <ul>
+                {% for k, v in sortie.getParticipants %}
+                    {# TODO : Ajouter la méthode et la route pour lier le profil utilisateur #}
+                    <li>{{ v.name }} {{ v.firstname }}</li>
+                {% endfor %}
+            </ul>
+        </td>
         <td>{{ sortie.organisateur.pseudo  }}</td>
         <td>
             {{ if app.user.id == sortie.organisateur.id || is_granted('ROLE_ADMIN') }}
