@@ -34,7 +34,7 @@ class SortieController extends AbstractController
     ]);
 }
     /**
-     * @Route("/sortie/create", name="app_sortie_create)
+     * @Route("/sortie/create", name="app_sortie_create")
      */
     public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -54,7 +54,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/sortie/edit/{id}, name="app_sortie_edit", requirements={"id"="\d+"})
+     * @Route("/sortie/edit/{id}", name="app_sortie_edit", requirements={"id"="\d+"})
      */
     public function editSortie(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
