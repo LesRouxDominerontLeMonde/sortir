@@ -6,7 +6,6 @@ use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\SortieFormType;
-use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,14 +46,14 @@ class SortieController extends AbstractController
      * @Route("/sortie/create", name="app_sortie_create")
      */
     public function createSortie(Request $request, EntityManagerInterface $entityManager,
-                                 LieuRepository $lieuRepository): Response
+                                 ManagerRegistry $doctrine): Response
     {
         $sortie = new Sortie();
         $etat = $this->managerRegistry->getRepository(Etat::class)->find(1);
-        $uniqueCities = $entityManager->getRepository(Lieu::class)->findUniqueCities();
         $user = $this->getUser();
         $form = $this->createForm(SortieFormType::class, $sortie, [
-            'unique_cities' => $uniqueCities]);
+            'lieu_repository' => $doctrine->getRepository(Lieu::class),
+        ]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){

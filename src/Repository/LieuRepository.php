@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Lieu;
+use App\Entity\Ville;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,15 +39,6 @@ class LieuRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findUniqueCities()
-    {
-        return $this->createQueryBuilder('lieu')
-            ->select('ville.nom')
-            ->distinct()
-            ->join('lieu.ville', 'ville')
-            ->getQuery()
-            ->getResult();
-    }
 
     public function findLieuxByVille($nomVille){
 
@@ -58,6 +50,14 @@ class LieuRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByVille(Ville $ville)
+    {
+        return $this->createQueryBuilder('lieu')
+            ->where('lieu.ville = :ville')
+            ->setParameter('ville', $ville)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return LieuFixtures[] Returns an array of LieuFixtures objects
 //     */
