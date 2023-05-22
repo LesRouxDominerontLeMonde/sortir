@@ -40,12 +40,20 @@ class LieuRepository extends ServiceEntityRepository
     }
     public function findUniqueCities()
     {
-        return $this->createQueryBuilder('l')
-            ->select('nom')
+        return $this->createQueryBuilder('lieu')
+            ->select('ville.nom')
             ->distinct()
-            ->from('App\Entity\Lieu', 'lieu')
-            ->leftJoin('lieu.ville', 'ville')
-            ->addSelect('ville.nom AS villeNom')
+            ->join('lieu.ville', 'ville')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findLieuxByVille($nomVille){
+
+        return $this->createQueryBuilder('lieu')
+            ->join('lieu.ville', 'ville')
+            ->where('ville.nom = :nomVille')
+            ->setParameter('nomVille', $nomVille)
             ->getQuery()
             ->getResult();
     }

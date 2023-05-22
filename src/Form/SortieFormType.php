@@ -2,8 +2,6 @@
 
 namespace App\Form;
 
-
-use App\Entity\Lieu;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -21,7 +19,10 @@ class SortieFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $uniqueCities = $options['unique_cities'];
-        dump($uniqueCities);
+        $choices = [];
+        foreach ($uniqueCities as $city) {
+            $choices[$city['nom']] = $city['nom'];
+        }
 
         $builder
             ->add('nom', TextType::class, ['label'=>'Nom de la sortie'])
@@ -40,16 +41,22 @@ class SortieFormType extends AbstractType
             ->add('fin_inscription', DateType::class, ['label'=>'Date limite d\'inscription'])
             ->add('inscriptions_max', IntegerType::class, ['label'=>'Nombre de places'])
 
+            ->add('ville', ChoiceType::class, [
+                'choices' => $choices,
+                'mapped' => false, // Ne pas mapper ce champ à l'entité Sortie
+                'label'=>'Ville',])
             ->add('lieu', ChoiceType::class, [
-                'choices' => $uniqueCities,
-                'label'=>'Ville',]);
-    }
+                'label'=>'Lieu',
+                'choices' => $options['lieu_choices'],
+                    ]);
+        }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
             'unique_cities' => [],
+            'lieu_choices' => [],
         ]);
     }
 }
