@@ -4,4 +4,9 @@
 
 {% block body %}
     <h1>Page d'accueil</h1>
+    <a href="{{ path('app_sorties')}}">Liste des sorties</a>
+    <p>Date du jour : {{ "now"|date("d/m/Y H:i") }}</p>
+    <p>Participant : {{ app.user.firstname }} {{ app.user.name }}</p>
+    <a href="{{ path('app_sortie_create') }}" class="btn btn-primary">Créer une sortie</a>
+
 {% endblock %}

@@ -7,13 +7,13 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 {% if app.user %}
-                <a class="nav-link" href="{{  path('app_home') }}">Acceuil</a>
+                <a class="nav-link" href="{{  path('app_home') }}">Accueil</a>
                 <a class="nav-link" href="{{  path('app_profil') }}">Mon Profil</a>
                 <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
-                   {#  {% if app.user.admin %}
+                    {% if is_granted('ROLE_ADMIN') %}
                    <a class="nav-link" href="#">Villes</a>
                    <a class="nav-link" href="#">CampusFixtures</a>
-                        {% endif %}#}
+                        {% endif %}
                 {% else %}
                     <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
                     <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
