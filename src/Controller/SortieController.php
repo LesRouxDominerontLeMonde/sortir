@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
-use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\SortieFormType;
 use App\Repository\SortieRepository;
@@ -45,15 +44,12 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/create", name="app_sortie_create")
      */
-    public function createSortie(Request $request, EntityManagerInterface $entityManager,
-                                 ManagerRegistry $doctrine): Response
+    public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sortie = new Sortie();
         $etat = $this->managerRegistry->getRepository(Etat::class)->find(1);
         $user = $this->getUser();
-        $form = $this->createForm(SortieFormType::class, $sortie, [
-            'lieu_repository' => $doctrine->getRepository(Lieu::class),
-        ]);
+        $form = $this->createForm(SortieFormType::class, $sortie, []);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -63,6 +59,9 @@ class SortieController extends AbstractController
             $sortie->setOrganisateur($user);
             $entityManager->persist($sortie);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Votre formulaire a été soumis avec succès !');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('sortie/create.html.twig', [

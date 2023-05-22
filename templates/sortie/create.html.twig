@@ -10,6 +10,12 @@
 
                 <button type="submit" class="btn btn-primary">Enregister</button>
                 {{ form_end(form) }}
+
+                {% for flashMessage in app.flashes('success') %}
+                    <div class="alert alert-success mt-3">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
