@@ -6,7 +6,7 @@ use App\Repository\PhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=PhotosRepository::class)
+ * @ORM\Entity(repositoryClass=PhotoRepository::class)
  */
 class Photo
 {
