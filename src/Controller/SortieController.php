@@ -9,6 +9,8 @@ use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,6 +70,7 @@ class SortieController extends AbstractController
             'form'=>$form->createView()
         ]);
     }
+
 
     /**
      * @Route("/sortie/edit/{id}", name="app_sortie_edit", requirements={"id"="\d+"})
