@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Photo;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Photo[]    findAll()
  * @method Photo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PhotosRepository extends ServiceEntityRepository
+class PhotoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -24,7 +25,10 @@ class PhotosRepository extends ServiceEntityRepository
 
     public function add(Photo $entity, bool $flush = false): void
     {
+        // Avant d'ajouter une nouvelle photo de profil, on désactive la courante
         $this->disablePrevious($entity);
+        // Puis on met le flag active à true et on persiste la nouvelle photo
+        $entity->setActive(true);
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -35,19 +39,18 @@ class PhotosRepository extends ServiceEntityRepository
     public function remove(Photo $entity, bool $flush = false): void
     {
         $em = $this->getEntityManager();
+        // Si on supprime la photo active (pour si maj de la gestion des profils)
         if($entity->isActive()){
-            $user = $entity->getUtilisateur()->getId();
-            //$newPhoto = $this->findOnePhoto($user);
+            // On recherche une autre photo du même profil
             $newPhoto = $this->findAnotherPhoto($entity);
+            // Si on l'a trouvé, on l'active et on persiste
             if ($newPhoto)
             {
-                $sql = 'UPDATE photos SET active = 1 WHERE id = :id';
-                $cnx = $em->getConnection();
-                $stmt = $cnx->prepare($sql);
-                $stmt->executeQuery(['id' => $newPhoto->getId()]);
+                $newPhoto->setActive(true);
+                $em->persist($newPhoto);
             }
         }
-
+        // Puis on supprime
         $em->remove($entity);
 
         if ($flush) {
@@ -55,13 +58,13 @@ class PhotosRepository extends ServiceEntityRepository
         }
     }
 
-    private function disablePrevious(Photo $entity): void
+    private function disablePrevious(Photo $entity, bool $flush = false): void
     {
-        $user = $entity->getUtilisateur()->getId();
-        $sql = 'UPDATE photos SET active = 0 WHERE utilisateur_id = :user';
-        $cnx = $this->getEntityManager()->getConnection();
-        $stmt = $cnx->prepare($sql);
-        $stmt->executeQuery(['user' => $user]);
+        $entity->setActive(false);
+        $this->getEntityManager()->persist($entity);
+        if($flush){
+            $this->getEntityManager()->flush();
+        }
     }
 
 
@@ -89,6 +92,9 @@ class PhotosRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findCurrentPhoto(int $id): ?Photo
     {
         return $this->createQueryBuilder('p')
@@ -96,10 +102,14 @@ class PhotosRepository extends ServiceEntityRepository
             ->andWhere('p.active = :active')
             ->setParameter('user', $id)
             ->setParameter('active', true)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findOnePhoto(int $id): ?Photo
     {
         return $this->createQueryBuilder('p')
@@ -110,6 +120,9 @@ class PhotosRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findAnotherPhoto(Photo $entity): ?Photo
     {
         return $this->createQueryBuilder('p')
