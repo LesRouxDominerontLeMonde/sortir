@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Repository\PhotoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -312,14 +313,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Photos>
+     * @return Collection<int, Photo>
      */
     public function getPhotos(): Collection
     {
         return $this->photos;
     }
 
-    public function addPhoto(Photos $photo): self
+    public function addPhoto(Photo $photo): self
     {
         if (!$this->photos->contains($photo)) {
             $this->photos[] = $photo;
@@ -329,7 +330,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePhoto(Photos $photo): self
+    public function removePhoto(Photo $photo): self
     {
         if ($this->photos->removeElement($photo)) {
             // set the owning side to null (unless already changed)
@@ -339,5 +340,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getCurrentPhoto(): ?Photo
+    {
+        return (new PhotoRepository())->findCurrentPhoto($this->id);
     }
 }
