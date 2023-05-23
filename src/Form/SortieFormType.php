@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -49,7 +50,7 @@ class SortieFormType extends AbstractType
                 'choice_label' => 'nom', 'mapped' => false, 'placeholder' => 'Sélectionnez une ville',
                 'required' => true, 'constraints' => [
                     new NotBlank(['groups' => ['lieu_validation']]),
-                    ],
+                ],
             ])
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
@@ -59,6 +60,15 @@ class SortieFormType extends AbstractType
                 'constraints' => [
                     new NotBlank(['groups' => ['lieu_validation']]),
                 ],
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Enregistrer',
+            ])
+            ->add('delete', SubmitType::class, [
+                'label' => 'Publier la sortie',
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Annuler',
             ]);
 
         $builder->addEventListener(
