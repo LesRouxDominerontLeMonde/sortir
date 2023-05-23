@@ -8,55 +8,31 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
+        <div style="display: flex; flex-direction: row;">
+                <div style="width: 40%; background-color: red">
 
-        <div class="grid text-center">
-                <div class="g-col-6 g-col-md-4">.g-col-6 .g-col-md-4</div>
-                <div class="g-col-6 g-col-md-4">  Prénom : {{app.user.firstname}}
-                        <br />
-                        Nom : {{ app.user.name }}
-                        <br />
-                        Téléphone : {{ app.user.phoneNumber }}
-                        <br />
-                        Email : {{ app.user.email }}
-                        <br />
-                        Campus : {{ app.user.campus.nom }}
-                        <br />
-
-                        <button onclick="window.location.href = '{{ path('app_home') }}';">Retour</button></div>
-                <div class="g-col-6 g-col-md-4">.g-col-6 .g-col-md-4</div>
+                </div>
+                <div style="display: flex; flex-direction: column; height: 250px; justify-content: space-between;  margin-left: 20px">
+                        <div>
+                                <h2>{{ app.user.pseudo}} </h2>
+                        </div>
+                        <div>
+                                Prénom : {{app.user.firstname}}
+                                <br />
+                                Nom : {{ app.user.name }}
+                                <br />
+                                Téléphone : {{ app.user.phoneNumber }}
+                                <br />
+                                Email : {{ app.user.email }}
+                                <br />
+                                Campus : {{ app.user.campus.nom }}
+                                <br />
+                        </div>
+                        <div>
+                                <button onclick="window.location.href = '{{ path('app_home') }}';">Retour</button></div>
+                        </div>
+                </div>
         </div>
-
-<div class="example-wrapper">
-    <h1>{{ app.user.pseudo}} </h1>
-</div>
-
-<div class="container">
-        <div class="row">
-                <article class="col-md-4">
-                        <img src="URL source" alt="photo de profil">
-                </article>
-
-                <article class="col-md-4">
-                        Prénom : {{app.user.firstname}}
-                        <br />
-                        Nom : {{ app.user.name }}
-                        <br />
-                        Téléphone : {{ app.user.phoneNumber }}
-                        <br />
-                        Email : {{ app.user.email }}
-                        <br />
-                        Campus : {{ app.user.campus.nom }}
-                        <br />
-
-        <button onclick="window.location.href = '{{ path('app_home') }}';">Retour</button>
-
-                </article>
-
-                <article class="col-md-4">
-
-                </article>
-        </div>
-</div>
 
 
 
