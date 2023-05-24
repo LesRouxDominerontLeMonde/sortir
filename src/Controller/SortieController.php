@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieFormType;
@@ -9,8 +10,6 @@ use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,7 +48,8 @@ class SortieController extends AbstractController
     public function createSortie(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sortie = new Sortie();
-        $etat = $this->managerRegistry->getRepository(Etat::class)->find(1);
+        $etatEnregistre = $this->managerRegistry->getRepository(Etat::class)->find(1);
+        $etatPublie = $this->managerRegistry->getRepository(Etat::class)->find(2);
         $user = $this->getUser();
         $form = $this->createForm(SortieFormType::class, $sortie, []);
         $form->handleRequest($request);
@@ -57,12 +57,24 @@ class SortieController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $sortie->setCreatedAt(new \DateTimeImmutable());
             $sortie->setArchivee(false);
-            $sortie->setEtat($etat);
             $sortie->setOrganisateur($user);
+            $organisateur = $sortie->getOrganisateur();
+            $campusOrganisateur = $organisateur->getCampus();
+            $sortie->setCampusOrigine($campusOrganisateur);
+            $clickedButton = $form->getClickedButton();
+            if ($clickedButton && $clickedButton->getName() === 'enregistrer') {
+                $sortie->setEtat($etatEnregistre);
+            } elseif ($clickedButton && $clickedButton->getName() === 'publier') {
+                $sortie->setEtat($etatPublie);
+            }
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Votre formulaire a été soumis avec succès !');
+            if ($clickedButton && $clickedButton->getName() === 'enregistrer') {
+                $this->addFlash('success', 'Votre sortie a été enregistrée avec succès !');
+            } elseif ($clickedButton && $clickedButton->getName() === 'publier') {
+                $this->addFlash('success', 'Votre formulaire a été publiée avec succès !');
+            }
             return $this->redirectToRoute('app_home');
         }
 
@@ -70,7 +82,6 @@ class SortieController extends AbstractController
             'form'=>$form->createView()
         ]);
     }
-
 
     /**
      * @Route("/sortie/edit/{id}", name="app_sortie_edit", requirements={"id"="\d+"})

@@ -7,8 +7,7 @@
             <div class="col-md-6 offset-md-3">
                 {{ form_start(form) }}
                 {{ form_widget(form)}}
-
-                <button type="submit" class="btn btn-primary">Enregister</button>
+                <a href="{{ path('app_home') }}" class="btn btn-secondary">Annuler</a>
                 {{ form_end(form) }}
 
                 {% for flashMessage in app.flashes('success') %}
