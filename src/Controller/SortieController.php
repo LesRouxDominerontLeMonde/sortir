@@ -139,7 +139,8 @@ class SortieController extends AbstractController
                     }
                 $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
                 return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
-
-
     }
+
+
+    public function desinscriptionSortie(){}
 }
