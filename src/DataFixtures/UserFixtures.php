@@ -23,12 +23,13 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 $lname = $faker->lastName();
                 $mail = preg_replace('/\s/', '_', $lname.$fname)."@".$faker->safeEmailDomain();
                 $users->setCampus($this->getReference('campus_'.$j));
+                // setPassword contains a hash for the password 'password'
                 $users->setActif(true)
                     ->setEmail($mail)
                     ->setName($lname)
                     ->setFirstname($fname)
                     ->setPseudo("pseudo_".$i."_$j")
-                    ->setPassword('password');
+                    ->setPassword('$2y$13$jl4KFkN7n78oToXKMVWELuaIcjAp6/7sfuSLOnG6dqogm1YCsUv9y');
                 $manager->persist($users);
                 $this->addReference('users_'.$i.'_c_'.$j, $users);
             }

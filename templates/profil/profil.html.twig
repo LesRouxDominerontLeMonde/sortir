@@ -1,35 +1,48 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Profil de  {{ app.user.pseudo }}!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-        <div style="display: flex; flex-direction: row;">
-                <div style="width: 40%; background-color: red">
-
+        <div class="row">
+                <div class="col-5">
+                        {% if photo is defined and photo is not null %}
+                                <img src="{{ url('image/'~photo) }}" alt="photo de profil">
+                        {% endif %}
                 </div>
-                <div style="display: flex; flex-direction: column; height: 250px; justify-content: space-between;  margin-left: 20px">
-                        <div>
-                                <h2>{{ app.user.pseudo}} </h2>
-                        </div>
-                        <div>
-                                Prénom : {{app.user.firstname}}
-                                <br />
-                                Nom : {{ app.user.name }}
-                                <br />
-                                Téléphone : {{ app.user.phoneNumber }}
-                                <br />
-                                Email : {{ app.user.email }}
-                                <br />
-                                Campus : {{ app.user.campus.nom }}
-                                <br />
-                        </div>
-                        <div>
-                                <button onclick="window.location.href = '{{ path('app_home') }}';">Retour</button></div>
+                <div class="col-7">
+                        <div class="container">
+                                <div class="row">
+                                        <h2>{{ app.user.pseudo}}</h2>
+                                </div>
+                                <div class="row">
+                                        <p class="col-2">Prénom&nbsp;:</p>
+                                        <p class="col">{{app.user.firstname}}</p>
+                                </div>
+                                <div class="row">
+                                        <p class="col-2">Nom&nbsp;:</p>
+                                        <p class="col">{{app.user.name}}</p>
+                                </div>
+                                <div class="row">
+                                        <p class="col-2">Téléphone&nbsp;:</p>
+
+                                        <p class="col">0{{app.user.phoneNumber}}</p>
+                                </div>
+                                <div class="row">
+                                        <p class="col-2">E-mail&nbsp;:</p>
+                                        <p class="col">{{app.user.email}}</p>
+                                </div>
+                                <div class="row">
+                                        <p class="col-2">Campus&nbsp;:</p>
+                                        <p class="col">{{app.user.campus.nom}}</p>
+                                </div>
+                                <div class="row">
+                                        <div class="col-1 mx-2 px-1">
+                                                <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_home') }}';">Retour</button>
+                                        </div>
+                                        <div class="col-3 mx-2 px-1">
+                                                <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_profil_edit') }}';">Mettre à jour le profil</button>
+                                        </div>
+                                </div>
+
                         </div>
                 </div>
         </div>

@@ -24,12 +24,18 @@ class ProfilController extends AbstractController
     public function index(Security $security): Response
     {
         $user = $security->getUser();
-        $dir = $this->projectDir.'/public/image/'.$user->getId();
-        $filesystem = new Filesystem();
-        $filesystem->mkdir($dir);
 
         return $this->render('profil/profil.html.twig', [
             'user' => $user,
+            'photo' => $user->getCurrentPhoto(),
         ]);
+    }
+
+    /**
+     * @Route("/profil/edit", name="app_profil_edit")
+     */
+    public function edit(): Response
+    {
+        return $this->render('profil/profil.html.twig');
     }
 }

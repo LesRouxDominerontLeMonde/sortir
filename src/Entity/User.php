@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use App\Repository\PhotoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -85,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $pseudo;
 
     /**
-     * @ORM\OneToMany(targetEntity=Photos::class, mappedBy="utilisateur", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Photo::class, mappedBy="utilisateur", orphanRemoval=true)
      */
     private $photos;
 
@@ -342,8 +341,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCurrentPhoto(): ?Photo
+    public function getCurrentPhoto()
     {
-        return (new PhotoRepository())->findCurrentPhoto($this->id);
+        $result = null;
+        foreach ($this->photos as $p){
+            if ($p->isActive()){
+                $result = $p;
+                break;
+            }
+        }
+        return $result;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Photo;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\CampusRepository;
@@ -39,6 +40,31 @@ class RegistrationController extends AbstractController
                     $form->get('password')->getData()
                 )
             );
+
+            // Ajout de la photo
+
+            $photo = $form->get('photo')->getData();
+            // Si il y a un fichier dans les données du ormulaire
+            if ($photo)
+            {
+                // On vérifie le type
+                $mime = $photo->getMimeType();
+                if($mime === 'image/jpeg' || $mime === 'image/png'){
+                    // Si le type es ok, on donne un nom de fichier unique
+                    $filename = uniqid().'.'.$photo->guessExtension();
+                    // On l'enregistre dans le dossier enregistré dans config/services.yaml
+                    $photo->move($this->getParameter('profile_image_directory'), $filename);
+                    // On crée l'entité pour enregistrer le fichier dans la base de données
+                    $photoEntity = new Photo();
+                    $photoEntity->setNomFichier($filename)
+                        ->setUtilisateur($user);
+                    $entityManager->persist($photoEntity);
+                    $entityManager->flush();
+                    // Puis on lie la photo au profil utilisateur
+                    $user->addPhoto($photoEntity);
+                }
+            }
+
 
             $entityManager->persist($user);
             $entityManager->flush();
