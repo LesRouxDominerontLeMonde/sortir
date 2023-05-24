@@ -111,9 +111,16 @@ class SortieController extends AbstractController
         $inscriptionRepo = $doctrine -> getRepository(Sortie::class);
 
         if ($sortie -> getEtat() -> getLibelle() !== 'Ouverte') {
-            $this->addFlash('danger', "Impossible d'accéder a cette sorite");
+            $this->addFlash('danger', "Impossible d'accéder a cette sortie");
             return $this->redirectToRoute('app_sorties', ['id' => $sortie->getId()]);
         }
+
+        if ($sortie -> limiteInscription())
+            {
+                $this -> addFlash('danger', 'Trop tard :( Sortie complète');
+                return $this -> redirectToRoute('app_sorties', ['id' => $sortie -> getId()]);
+        }
+
 
                 $inscription = new Sortie();
                 $inscription -> setUser ($this -> getUser());
@@ -122,6 +129,14 @@ class SortieController extends AbstractController
                 $em -> persist($inscription);
                 $em -> flush();
 
+                #actualiser le nombre de participant apres inscription
+                $em -> refresh($sortie);
+
+                #si la sortie est complete l'etat passe en clôturée
+                if ($sortie ->limiteInscription())
+                    {
+                        $etat -> setLibelle() == 'Clôturée';
+                    }
                 $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
                 return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
 
