@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Form\FilterSortiesFormType;
 use App\Form\SortieFormType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,13 +36,30 @@ class SortieController extends AbstractController
     /**
      * @Route("/sorties", name="app_sorties")
      */
-    public function listeSorties(SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
-{
-    $sorties = $sortieRepository->findAll();
-    return $this->render('sortie/liste.html.twig', [
-        'sorties' => $sorties
-    ]);
-}
+    public function listeSorties(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    {
+        $sortie = new Sortie();
+        $sorties = $sortieRepository->findAll();
+        $filterForm = $this->createForm(FilterSortiesFormType::class, $sortie, []);
+        $filterForm->handleRequest($request);
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+            // Les données du formulaire sont valides, vous pouvez récupérer les critères de filtrage
+            $filtreCampus = $filterForm->get('campus_origine')->getData();
+            $filtreNom = $filterForm->get('nom')->getData();
+            $filtreDebut = $filterForm->get('debut')->getData();
+            $filtreArchivee = $filterForm->get('archivee')->getData();
+            $filtreEtat = $filterForm->get('etat')->getData();
+            $filtreOrganisateur = $filterForm->get('organisateur')->getData();
+            $filterInscrit = $filterForm->get('inscrit')->getData();
+
+            // Utilisez les critères de filtrage pour ajuster votre requête et récupérer les sorties correspondantes
+            $sorties = $this->getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filterInscrit);
+        }
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sorties,
+            'filter_form' => $filterForm->createView()
+        ]);
+    }
     /**
      * @Route("/sortie/create", name="app_sortie_create")
      */
@@ -157,4 +175,53 @@ class SortieController extends AbstractController
                     return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
                 }
         }
+    private function getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filterInscrit)
+    {
+        $entityManager = $this->managerRegistry->getManager();
+        $repository = $entityManager->getRepository(Sortie::class);
+
+        $queryBuilder = $repository->createQueryBuilder('s');
+
+        // Appliquer les critères de filtrage
+
+        if ($filtreCampus!== null) {
+            $queryBuilder->andWhere('s.campus_origine = :campus')
+                ->setParameter('campus', $filtreCampus);
+        }
+
+        if ($filtreNom!== null) {
+            $queryBuilder->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', '%'.$filtreNom.'%');
+        }
+
+        if ($filtreDebut!== null) {
+            $queryBuilder->andWhere('s.debut >= :debut')
+                ->setParameter('debut', $filtreDebut);
+        }
+
+        if ($filtreArchivee !== null) {
+            $queryBuilder->andWhere('s.archivee = :archivee')
+                ->setParameter('archivee', (bool) $filtreArchivee);
+        }
+
+        if ($filtreEtat!== null) {
+            $queryBuilder->andWhere('s.etat = :etat')
+                ->setParameter('etat', $filtreEtat);
+        }
+
+        if ($filtreOrganisateur) {
+            $queryBuilder->andWhere('s.organisateur = :organisateur')
+                ->setParameter('organisateur', $filtreOrganisateur);
+        }
+
+        if ($filterInscrit!== null) {
+            $queryBuilder->andWhere(':participant MEMBER OF s.participants')
+                ->setParameter('participant', $filterInscrit);
+        }
+
+        $query = $queryBuilder->getQuery();
+        $sorties = $query->getResult();
+
+        return $sorties;
+    }
 }
