@@ -111,7 +111,7 @@ class SortieController extends AbstractController
         $inscriptionRepo = $doctrine -> getRepository(Sortie::class);
 
         if ($sortie -> getEtat() -> getLibelle() !== 'Ouverte') {
-            $this->addFlash('danger', "Impossible d'accéder a cette sorite");
+            $this->addFlash('danger', "Impossible d'accéder a cette sortie");
             return $this->redirectToRoute('app_sorties', ['id' => $sortie->getId()]);
         }
 
