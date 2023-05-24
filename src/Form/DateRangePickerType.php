@@ -13,13 +13,11 @@ class DateRangePickerType extends AbstractType
         $builder
             ->add('start', DateType::class, [
                 'widget' => 'single_text',
-                'html5' => false,
                 'format' => 'yyyy-MM-dd',
                 'label' => 'Entre',
             ])
             ->add('end', DateType::class, [
                 'widget' => 'single_text',
-                'html5' => false,
                 'format' => 'yyyy-MM-dd',
                 'label' => 'et',
             ]);
