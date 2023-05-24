@@ -159,7 +159,24 @@ class SortieController extends AbstractController
                 return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
     }
 
+    /**
+     * @Route("/sortie/désinscription/{id}", name="app_sortie_désinscription", requirements={"id"="\d+"})
+     */
+    public function desinscriptionSortie(EntityManagerInterface $em, SortieRepository $sortieRepository, Sortie $sortie)
+    {
+        $inscriptionMatch = $sortieRepository -> findOneBy(['user' => $this -> getUser(), 'sortie' => $sortie]);
+        if($inscriptionMatch)
+        {
+            $em -> remove($inscriptionMatch);
+            $em -> flush();
 
+            $this -> addFlash('success', 'Vous êtes maintenant désinscrit. Au plaisir  :)');
+            return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
+        } else {
+            $this->addFlash('error', 'Inscription non trouvée.');
+            return $this->redirectToRoute('app_sorties');
+        }
+    }
 
     private function getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filtreInscrit)
     {
