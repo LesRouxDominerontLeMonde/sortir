@@ -100,4 +100,31 @@ class SortieController extends AbstractController
         // TODO : Code pour récupérer l'item à supprimer et renvoyer une 404 si paq ok
         return $this->render('sortie/delete.html.twig');
     }
+
+
+    /**
+     * @Route ("/sortie/inscription/{id}", name="app_sortie_inscription", requirements={"id"="\d+"})
+     */
+    public function inscriptionSortie (ManagerRegistry $doctrine, Sortie $sortie, Etat $etat): Response
+    {
+        $em = $doctrine -> getManager();
+        $inscriptionRepo = $doctrine -> getRepository(Sortie::class);
+
+        if ($sortie -> getEtat() -> getLibelle() !== 'Ouverte') {
+            $this->addFlash('danger', "Impossible d'accéder a cette sorite");
+            return $this->redirectToRoute('app_sorties', ['id' => $sortie->getId()]);
+        }
+
+                $inscription = new Sortie();
+                $inscription -> setUser ($this -> getUser());
+                $inscription -> setSortie ($sortie);
+
+                $em -> persist($inscription);
+                $em -> flush();
+
+                $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
+                return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
+
+
+    }
 }
