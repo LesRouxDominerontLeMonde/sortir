@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -42,8 +43,6 @@ class SortieFormType extends AbstractType
                 'with_hours' => false,
                 'with_minutes' => true,])
             ->add('description', TextType::class, ['label' => 'Description'])
-            ->add('campus_origine', EntityType::class, ['class' => 'App\Entity\Campus',
-                'choice_label' => 'nom'])
             ->add('fin_inscription', DateType::class, ['label' => 'Date limite d\'inscription'])
             ->add('inscriptions_max', IntegerType::class, ['label' => 'Nombre de places'])
             ->add('ville', EntityType::class, ['class' => 'App\Entity\Ville',
@@ -61,14 +60,11 @@ class SortieFormType extends AbstractType
                     new NotBlank(['groups' => ['lieu_validation']]),
                 ],
             ])
-            ->add('save', SubmitType::class, [
+            ->add('enregistrer', SubmitType::class, [
                 'label' => 'Enregistrer',
             ])
-            ->add('delete', SubmitType::class, [
+            ->add('publier', SubmitType::class, [
                 'label' => 'Publier la sortie',
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Annuler',
             ]);
 
         $builder->addEventListener(
