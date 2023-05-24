@@ -115,6 +115,13 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('app_sorties', ['id' => $sortie->getId()]);
         }
 
+        if ($sortie -> limiteInscription())
+            {
+                $this -> addFlash('danger', 'Trop tard :( Sortie complète');
+                return $this -> redirectToRoute('app_sorties', ['id' => $sortie -> getId()]);
+        }
+
+
                 $inscription = new Sortie();
                 $inscription -> setUser ($this -> getUser());
                 $inscription -> setSortie ($sortie);
@@ -122,6 +129,14 @@ class SortieController extends AbstractController
                 $em -> persist($inscription);
                 $em -> flush();
 
+                #actualiser le nombre de participant apres inscription
+                $em -> refresh($sortie);
+
+                #si la sortie est complete l'etat passe en clôturée
+                if ($sortie ->limiteInscription())
+                    {
+                        $etat -> setLibelle() == 'Clôturée';
+                    }
                 $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
                 return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
 

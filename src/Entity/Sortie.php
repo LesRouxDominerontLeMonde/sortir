@@ -293,4 +293,13 @@ class Sortie
         return date_add($this->debut, $this->fin_inscription);
 
     }
+
+    public function limiteInscription(): bool
+    {
+        if($this -> getInscriptionsMax() && $this -> limiteInscription() > $this -> getInscriptionsMax())
+            {
+                return true;
+            }
+        return false;
+    }
 }
