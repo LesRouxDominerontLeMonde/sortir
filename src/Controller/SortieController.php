@@ -50,10 +50,10 @@ class SortieController extends AbstractController
             $filtreArchivee = $filterForm->get('archivee')->getData();
             $filtreEtat = $filterForm->get('etat')->getData();
             $filtreOrganisateur = $filterForm->get('organisateur')->getData();
-            $filterInscrit = $filterForm->get('inscrit')->getData();
+            $filtreInscrit = $filterForm->get('inscrit')->getData();
 
             // Utilisez les critères de filtrage pour ajuster votre requête et récupérer les sorties correspondantes
-            $sorties = $this->getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filterInscrit);
+            $sorties = $this->getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filtreInscrit);
         }
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sorties,
@@ -161,12 +161,21 @@ class SortieController extends AbstractController
 
 
 
-    private function getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filterInscrit)
+    private function getSortiesFiltrees($filtreCampus, $filtreNom, $filtreDebut, $filtreArchivee, $filtreEtat, $filtreOrganisateur, $filtreInscrit)
     {
+        $user = $this->getUser();
         $entityManager = $this->managerRegistry->getManager();
         $repository = $entityManager->getRepository(Sortie::class);
 
         $queryBuilder = $repository->createQueryBuilder('s');
+
+        dump($filtreCampus);
+        dump($filtreNom);
+        dump($filtreDebut);
+        dump($filtreArchivee);
+        dump($filtreEtat);
+        dump($filtreOrganisateur);
+        dump($filtreInscrit);
 
         // Appliquer les critères de filtrage
 
@@ -180,9 +189,14 @@ class SortieController extends AbstractController
                 ->setParameter('nom', '%'.$filtreNom.'%');
         }
 
-        if ($filtreDebut!== null) {
-            $queryBuilder->andWhere('s.debut >= :debut')
-                ->setParameter('debut', $filtreDebut);
+        if ($filtreDebut !== null && isset($filtreDebut['start'], $filtreDebut['end'])) {
+            $start = $filtreDebut['start']->format('Y-m-d H:i:s');
+            $end = $filtreDebut['end']->format('Y-m-d H:i:s');
+
+            $queryBuilder->andWhere('s.debut >= :start')
+                ->andWhere('s.debut <= :end')
+                ->setParameter('start', $start)
+                ->setParameter('end', $end);
         }
 
         if ($filtreArchivee !== null) {
@@ -190,9 +204,9 @@ class SortieController extends AbstractController
                 ->setParameter('archivee', (bool) $filtreArchivee);
         }
 
-        if ($filtreEtat!== null) {
-            $queryBuilder->andWhere('s.etat = :etat')
-                ->setParameter('etat', $filtreEtat);
+        if ($filtreEtat !== null) {
+            $queryBuilder->andWhere('s.etat = :etatId')
+                ->setParameter('etatId', $filtreEtat->getId());
         }
 
         if ($filtreOrganisateur) {
@@ -200,10 +214,19 @@ class SortieController extends AbstractController
                 ->setParameter('organisateur', $filtreOrganisateur);
         }
 
-        if ($filterInscrit!== null) {
-            $queryBuilder->andWhere(':participant MEMBER OF s.participants')
-                ->setParameter('participant', $filterInscrit);
+        if ($filtreInscrit) {
+            $subQuery = $entityManager->createQueryBuilder()
+                ->select('s1.id')
+                ->from('App\Entity\Sortie', 's1')
+                ->join('s1.participants', 'p')
+                ->where('p = :user')
+                ->andWhere('s1 = s');
+
+            $queryBuilder->andWhere($queryBuilder->expr()->exists($subQuery->getDQL()))
+                ->setParameter('user', $user);
         }
+
+
 
         $query = $queryBuilder->getQuery();
         $sorties = $query->getResult();
