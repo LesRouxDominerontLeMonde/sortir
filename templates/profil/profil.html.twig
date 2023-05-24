@@ -4,9 +4,7 @@
 
         <div class="row">
                 <div class="col-5">
-                        {% if photo is defined and photo is not null %}
-                                <img src="{{ url('image/'~photo) }}" alt="photo de profil">
-                        {% endif %}
+                        <img src="{{ asset(photo_path ~ photo) }}" alt="Photo de profil">
                 </div>
                 <div class="col-7">
                         <div class="container">

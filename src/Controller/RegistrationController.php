@@ -55,9 +55,11 @@ class RegistrationController extends AbstractController
                     // On l'enregistre dans le dossier enregistré dans config/services.yaml
                     $photo->move($this->getParameter('profile_image_directory'), $filename);
                     // On crée l'entité pour enregistrer le fichier dans la base de données
+                    $entityManager->persist($user);
                     $photoEntity = new Photo();
                     $photoEntity->setNomFichier($filename)
-                        ->setUtilisateur($user);
+                        ->setUtilisateur($user)
+                        ->setActive(true);
                     $entityManager->persist($photoEntity);
                     $entityManager->flush();
                     // Puis on lie la photo au profil utilisateur
@@ -83,4 +85,6 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
+
+
 }

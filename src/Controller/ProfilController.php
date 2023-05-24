@@ -24,10 +24,12 @@ class ProfilController extends AbstractController
     public function index(Security $security): Response
     {
         $user = $security->getUser();
+        $photoName = $user->getCurrentPhoto();
 
         return $this->render('profil/profil.html.twig', [
             'user' => $user,
-            'photo' => $user->getCurrentPhoto(),
+            'photo' => $user->getCurrentPhotoName(),
+            'photo_path' => $this->getParameter('profile_image_directory') .'/',
         ]);
     }
 

@@ -341,7 +341,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCurrentPhoto()
+    /**
+     * @return Photo|null Renvoie la première photo de profil active ou null si il n'y en a pas
+     */
+    public function getCurrentPhoto(): ?Photo
     {
         $result = null;
         foreach ($this->photos as $p){
@@ -351,5 +354,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return $result;
+    }
+
+    /**
+     * @return string Le nom de la photo de profil active s'il y en a une, 'default.png' sinon
+     */
+    public function getCurrentPhotoName(): string
+    {
+        $photo = $this->getCurrentPhoto();
+        return  ($photo)?$photo->getNomFichier():'default.png';
     }
 }
