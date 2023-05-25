@@ -168,12 +168,17 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/désinscription/{id}", name="app_sortie_désinscription", requirements={"id"="\d+"})
      */
-    public function desinscriptionSortie(EntityManagerInterface $em, SortieRepository $sortieRepository, Sortie $sortie)
+    public function desinscriptionSortie(Request $request, EntityManagerInterface $em, SortieRepository $sortieRepository, ManagerRegistry $doctrine)
     {
-        $inscriptionMatch = $sortieRepository -> findOneBy(['user' => $this -> getUser(), 'sortie' => $sortie]);
+        $em = $doctrine -> getManager();
+        $id = $request->get('id');
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $user = $this->getUser();
+        $inscriptionMatch = $sortie->getParticipants()->contains($user);
         if($inscriptionMatch)
         {
-            $em -> remove($inscriptionMatch);
+            $desinscription = $sortie->removeParticipant($user);
+            $em -> persist($desinscription);
             $em -> flush();
 
             $this -> addFlash('success', 'Vous êtes maintenant désinscrit. Au plaisir  :)');
