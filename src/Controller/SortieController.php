@@ -11,6 +11,7 @@ use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -111,10 +112,34 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/edit/{id}", name="app_sortie_edit", requirements={"id"="\d+"})
      */
-    public function editSortie(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function editSortie(Request $request, ManagerRegistry $doctrine, int $id, SortieRepository $sortieRepository): Response
     {
+        $em = $doctrine -> getManager();
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+        // Créer le formulaire
+        $form = $this->createForm(SortieFormType::class, $sortie);
+
+        // Gérer la soumission du formulaire
+        $form->handleRequest($request);
+
+        $clickedButton = $form->getClickedButton();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setUpdatedAt(new \DateTimeImmutable());
+            // Enregistrer les modifications dans la base de données
+            $em->flush();
+            if ($clickedButton && $clickedButton->getName() === 'enregistrer') {
+                $this->addFlash('success', 'Votre sortie a été enregistrée avec succès !');
+            } elseif ($clickedButton && $clickedButton->getName() === 'publier') {
+                $this->addFlash('success', 'Votre formulaire a été publiée avec succès !');
+            }
+
+            return $this->redirectToRoute('app_sortie', ['id' => $sortie->getId()]);
+        }
         // TODO : Code pour récupérer l'item à modifier et renvoyer une 404 si paq ok
-        return $this->render('sortie/edit.html.twig');
+        return $this->render('sortie/edit.html.twig', [
+            'form'=>$form->createView()
+        ]);
     }
 
     /**
@@ -124,6 +149,25 @@ class SortieController extends AbstractController
     {
         // TODO : Code pour récupérer l'item à supprimer et renvoyer une 404 si paq ok
         return $this->render('sortie/delete.html.twig');
+    }
+
+    /**
+     * @Route ("/sortie/annuler/{id}", name="app_sortie_annuler", requirements={"id"="\d+"})
+     */
+    public function annulerSortie(Request $request, ManagerRegistry $doctrine, SortieRepository $sortieRepository)
+    {
+        $em = $doctrine -> getManager();
+        $id = $request->get('id');
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        if ($sortie) {
+            // Modifier l'état de la sortie
+            $etatAnnule = $doctrine->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
+            $sortie->setEtat($etatAnnule);
+            $em->flush();
+        }
+        return $this->render('sortie/annuler.html.twig', [
+            'sortie' => $sortie,
+        ]);
     }
 
 

@@ -54,6 +54,7 @@
                                 {% endif %}
                                 {% if app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN') %}
                                     <a href="{{ path('app_sortie_edit',{ 'id': sortie.id }) }}">Modifier</a>&nbsp;<a href="{{ path('app_sortie_delete',{ 'id': sortie.id }) }}">Supprimer</a>
+                                    <a href="{{ path('app_sortie_annuler',{ 'id': sortie.id }) }}">Annuler</a
                                 {% endif %}
                             </td>
                         </tr>
