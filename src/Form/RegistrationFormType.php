@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -26,7 +27,7 @@ class RegistrationFormType extends AbstractType
             ->add('pseudo')
             ->add('firstname')
             ->add('name')
-            ->add('phoneNumber')
+            ->add('phoneNumber', TextType::class)
             ->add('email', EmailType::class)
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
@@ -38,8 +39,8 @@ class RegistrationFormType extends AbstractType
             'invalid_message' => 'Les mots de passes doivent être identiques.',
             'options' => ['attr' => ['autocomplete' => 'new-password']],
             'required' => true,
-            'first_options' => ['label' => 'Password'],
-            'second_options' => ['label' => 'Repeat Password'],
+            'first_options' => ['label' => 'Mot de passe'],
+            'second_options' => ['label' => 'Répétez le mot de passe'],
             'constraints' => [
                 new NotBlank([
                     'message' => 'Entrer un mot de passe',
