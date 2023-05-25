@@ -181,6 +181,8 @@ class SortieController extends AbstractController
             $em -> persist($desinscription);
             $em -> flush();
 
+            $em -> refresh($sortie); /* Pour liberer la place annulé et la rendre disponible */
+
             $this -> addFlash('success', 'Vous êtes maintenant désinscrit. Au plaisir  :)');
             return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
         } else {

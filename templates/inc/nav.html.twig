@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('app_home') }}">Sortir.com</a>
+        <a class="navbar-brand" href="{{ path('app_home') }}"><img src="{{ asset('image/logo-sortir.png') }}" alt="logo Sortir"><h1>Sortir.com</h1></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,7 +12,7 @@
                 <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
                     {% if is_granted('ROLE_ADMIN') %}
                    <a class="nav-link" href="#">Villes</a>
-                   <a class="nav-link" href="#">CampusFixtures</a>
+                   <a class="nav-link" href="#">Campus</a>
                         {% endif %}
                 {% else %}
                     <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
