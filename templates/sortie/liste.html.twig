@@ -5,55 +5,63 @@
 {% endblock %}
 
 {% block body %}
-    {{ form_start(filter_form) }}
-    {{ form_widget(filter_form) }}
-    <button type="submit">Filtrer</button>
-    {{ form_end(filter_form) }}
-<table class="table table-dark table-bordered border-info table-striped-columns">
-    <thead>
-    <tr class="table-info">
-        <th scope="col">Nom de la sortie</th>
-        <th scope="col">Date de la sortie</th>
-        <th scope="col">Clôture</th>
-        <th scope="col">inscrits/places</th>
-        <th scope="col">Etat</th>
-        <th scope="col">Inscrit</th>
-        <th scope="col">Organisateur</th>
-        <th scope="col">Actions</th>
-    </tr>
-    </thead>
-    {% for sortie in sorties %}
-    <tbody>
-    <tr>
-        <td>{{ sortie.nom }}</td>
-        <td>{{ sortie.debut | date('d/m/Y') }}</td>
-        <td>{{ sortie.finInscription| date('d/m/Y')}}</td>
-        <td>{{ sortie.nbInscrits }}/{{ sortie.inscriptionsMax }}</td>
-        <td>{{ sortie.etat.libelle }}</td>
-        <td>
-            <ul>
-                {% for k, v in sortie.getParticipants %}
-                    {# TODO : Ajouter la méthode et la route pour lier le profil utilisateur #}
-                    <li>{{ v.name }} {{ v.firstname }}</li>
-                {% endfor %}
-            </ul>
-        </td>
-        <td>{{ sortie.organisateur.pseudo  }}</td>
-        <td>
-            <a href="{{ path('app_sortie', {'id': sortie.id}) }}">Afficher</a>
-            {% if sortie.etat.libelle == 'Ouverte' and sortie.finInscription < date() %}
-            <a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">S'inscrire</a>
-            {% endif %}
-            {% if sortie.participants.contains(app.user) %}
-                <a href="{{ path('app_sortie_désinscription', {'id': sortie.id})}}">Se désinscrire</a>
-            {% endif %}
-            {% if app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_sortie_edit',{ 'id': sortie.id }) }}">Modifier</a>&nbsp;<a href="{{ path('app_sortie_delete',{ 'id': sortie.id }) }}">Supprimer</a>
-            {% endif %}
-        </td>
-    </tr>
-    </tbody>
-    {% endfor %}
-</table>
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col">
+                {{ form_start(filter_form) }}
+                {{ form_widget(filter_form) }}
+                <button type="submit">Filtrer</button>
+                {{ form_end(filter_form) }}
+            </div>
+            <div class="col">
+                <table class="table table-dark table-bordered border-info table-striped-columns">
+                    <thead>
+                    <tr class="table-info">
+                        <th scope="col">Nom de la sortie</th>
+                        <th scope="col">Date de la sortie</th>
+                        <th scope="col">Clôture</th>
+                        <th scope="col">inscrits/places</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Inscrit</th>
+                        <th scope="col">Organisateur</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    {% for sortie in sorties %}
+                        <tbody>
+                        <tr>
+                            <td>{{ sortie.nom }}</td>
+                            <td>{{ sortie.debut | date('d/m/Y') }}</td>
+                            <td>{{ sortie.finInscription| date('d/m/Y')}}</td>
+                            <td>{{ sortie.nbInscrits }}/{{ sortie.inscriptionsMax }}</td>
+                            <td>{{ sortie.etat.libelle }}</td>
+                            <td>
+                                <ul>
+                                    {% for k, v in sortie.getParticipants %}
+                                        {# TODO : Ajouter la méthode et la route pour lier le profil utilisateur #}
+                                        <li>{{ v.name }} {{ v.firstname }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ sortie.organisateur.pseudo  }}</td>
+                            <td>
+                                <a href="{{ path('app_sortie', {'id': sortie.id}) }}">Afficher</a>
+                                {% if sortie.etat.libelle == 'Ouverte' and sortie.finInscription < date() and not sortie.participants.contains(app.user)%}
+                                    <a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">S'inscrire</a>
+                                {% endif %}
+                                {% if sortie.participants.contains(app.user) %}
+                                    <a href="{{ path('app_sortie_désinscription', {'id': sortie.id})}}">Se désinscrire</a>
+                                {% endif %}
+                                {% if app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_sortie_edit',{ 'id': sortie.id }) }}">Modifier</a>&nbsp;<a href="{{ path('app_sortie_delete',{ 'id': sortie.id }) }}">Supprimer</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

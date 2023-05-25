@@ -31,9 +31,6 @@ class SortieController extends AbstractController
     {
         $id = $request->get('id');
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
-        $participants = $sortie->getParticipants();
-        dump($sortie);
-        dump($participants);
 
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie demandée n\'existe pas.');
@@ -133,10 +130,11 @@ class SortieController extends AbstractController
     /**
      * @Route ("/sortie/inscription/{id}", name="app_sortie_inscription", requirements={"id"="\d+"})
      */
-    public function inscriptionSortie (ManagerRegistry $doctrine, Sortie $sortie, Etat $etat): Response
+    public function inscriptionSortie (Request $request, ManagerRegistry $doctrine, SortieRepository $sortieRepository): Response
     {
         $em = $doctrine -> getManager();
-        $inscriptionRepo = $doctrine -> getRepository(Sortie::class);
+        $id = $request->get('id');
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
 
         if ($sortie -> getEtat() -> getLibelle() !== 'Ouverte') {
             $this->addFlash('danger', "Impossible d'accéder a cette sortie");
@@ -144,39 +142,43 @@ class SortieController extends AbstractController
         }
 
         if ($sortie -> limiteInscription())
-            {
-                $this -> addFlash('danger', 'Trop tard :( Sortie complète');
-                return $this -> redirectToRoute('app_sorties', ['id' => $sortie -> getId()]);
+        {
+            $this -> addFlash('danger', 'Trop tard :( Sortie complète');
+            return $this -> redirectToRoute('app_sorties', ['id' => $sortie -> getId()]);
         }
+        $user = $this->getUser();
+        $inscription = $sortie->addParticipant($user);
 
-                $inscription = new Sortie();
-                $inscription -> setUser ($this -> getUser());
-                $inscription -> setSortie ($sortie);
+        $em -> persist($inscription);
+        $em -> flush();
 
-                $em -> persist($inscription);
-                $em -> flush();
+        #actualiser le nombre de participant apres inscription
+        $em -> refresh($sortie);
 
-                #actualiser le nombre de participant apres inscription
-                $em -> refresh($sortie);
-
-                #si la sortie est complete l'etat passe en clôturée
-                if ($sortie ->limiteInscription())
-                    {
-                        $etat -> setLibelle() == 'Clôturée';
-                    }
-                $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
-                return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
+        #si la sortie est complete l'etat passe en clôturée
+        if ($sortie ->limiteInscription())
+        {
+            $etat = $sortie->getEtat();
+            $etat->setLibelle('Clôturée');
+        }
+        $this -> addFlash('success', 'Vous êtes inscrit. Félicitation :)');
+        return $this -> redirectToRoute('app_sorties', ['id' => $sortie ->getId()]);
     }
 
     /**
      * @Route("/sortie/désinscription/{id}", name="app_sortie_désinscription", requirements={"id"="\d+"})
      */
-    public function desinscriptionSortie(EntityManagerInterface $em, SortieRepository $sortieRepository, Sortie $sortie)
+    public function desinscriptionSortie(Request $request, EntityManagerInterface $em, SortieRepository $sortieRepository, ManagerRegistry $doctrine)
     {
-        $inscriptionMatch = $sortieRepository -> findOneBy(['user' => $this -> getUser(), 'sortie' => $sortie]);
+        $em = $doctrine -> getManager();
+        $id = $request->get('id');
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $user = $this->getUser();
+        $inscriptionMatch = $sortie->getParticipants()->contains($user);
         if($inscriptionMatch)
         {
-            $em -> remove($inscriptionMatch);
+            $desinscription = $sortie->removeParticipant($user);
+            $em -> persist($desinscription);
             $em -> flush();
 
             $this -> addFlash('success', 'Vous êtes maintenant désinscrit. Au plaisir  :)');

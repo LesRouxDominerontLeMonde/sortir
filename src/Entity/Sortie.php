@@ -296,10 +296,13 @@ class Sortie
 
     public function limiteInscription(): bool
     {
-        if($this -> getInscriptionsMax() && $this -> limiteInscription() > $this -> getInscriptionsMax())
-            {
-                return true;
-            }
+        $participantsCount = count($this->getParticipants());
+
+        if ($participantsCount > $this->getInscriptionsMax()) {
+            return true;
+        }
+
         return false;
     }
+
 }
