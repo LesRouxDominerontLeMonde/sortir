@@ -1,9 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer un profil{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <h1>Créer un profil</h1>
+    <h1>
+        {% if app.user is defined %}
+        {# Si un utilisateur est connecté, il s'agit d'une mise à jour #}
+        &Eacute;dition du profil {{ app.user.pseudo }}
+        {% else %}
+            Enregistrement
+        {% endif %}
+    </h1>
     <div class="container">
         {{ form_start(form) }}
         <div class="row">
@@ -54,24 +61,24 @@
                 {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-2"></div><div class="col-md-5 align-content-md-end">
-                <label class="form-label">Mot de passe</label>
+        {% if form.password is defined %}
+            <div class="row">
+                <div class="col-md-2"></div><div class="col-md-5 align-content-md-end">
+                    <label class="form-label">Mot de passe</label>
+                </div>
+                <div class="col-md-5">
+                    {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
+                </div>
             </div>
-            <div class="col-md-5">
-                {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
+            <div class="row">
+                <div class="col-md-2"></div><div class="col-md-5 align-content-md-end">
+                    <label class="form-label">Répétez le mot de passe</label>
+                </div>
+                <div class="col-md-5">
+                    {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-2"></div><div class="col-md-5 align-content-md-end">
-                <label class="form-label">Répétez le mot de passe</label>
-            </div>
-            <div class="col-md-5">
-                {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
-            </div>
-        </div>
-
+        {% endif %}
         <div class="row">
             <div class="col-md-2"></div><div class="col-md-5 align-content-md-end">
                 <label class="form-label">Photo de profil</label>
@@ -82,6 +89,7 @@
         </div>
         {{ form_rest(form) }}
         <button type="submit" class="btn btn-primary">Enregister</button>
+        <a class="btn btn-outline-primary px-2 mx-2" href="{{ path('app_profil') }}">Retour au profil</a>
         {{ form_end(form) }}
     </div>
 {% endblock %}

@@ -364,4 +364,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $photo = $this->getCurrentPhoto();
         return  ($photo)?$photo->getNomFichier():'default.png';
     }
+
+    public function getCampusId(): int
+    {
+        $result = -1;
+
+        if($this->campus instanceof Campus)
+        {
+            $result = $this->campus->getId();
+        } elseif (is_int($this->campus)) {
+            $result = $this->campus;
+        }
+
+        return $result;
+    }
 }

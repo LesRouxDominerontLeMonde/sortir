@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Photo;
 use App\Entity\User;
+use App\Form\PasswordUpdateFormType;
 use App\Form\RegistrationFormType;
 use App\Form\UpdateProfileFormType;
 use App\Security\AppAuthenticator;
@@ -59,6 +60,7 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
+            'title' => 'Enregistrement',
             'form' => $form->createView(),
         ]);
     }
@@ -67,7 +69,6 @@ class RegistrationController extends AbstractController
      * @Route("/profil/update", name="app_update_profil")
      */
     public function update(Request                     $request,
-                           UserPasswordHasherInterface $userPasswordHasher,
                            UserAuthenticatorInterface  $userAuthenticator,
                            AppAuthenticator            $appAuthenticator,
                            EntityManagerInterface      $entityManager): Response
@@ -79,19 +80,10 @@ class RegistrationController extends AbstractController
         $user = $this->getUser();
         $form = $this->createForm(UpdateProfileFormType::class, $user);
 
-        $form->handleRequest();
-        $oldPassword = $user->getPassword();
+        $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
             $user->setActif(true);
-            if($form->get('password')->getData() != '') {
-                $user->setPassword($userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                ));
-            } else {
-                $user->setPassword($oldPassword);
-            }
 
             $this->addPhoto($form->get('photo')->getData(), $user, $entityManager);
 
@@ -107,11 +99,39 @@ class RegistrationController extends AbstractController
             );
         }
 
-        return $this->render('update_profile/index.html.twig', [
+        return $this->render('registration/register.html.twig', [
             'form' => $form->createView(),
+            'title' => 'Mise à jour du profil',
         ]);
     }
 
+    /**
+     * @Route("/profil/newpassword", name="app_update_password")
+     */
+    public function password(Request $request,
+                             UserPasswordHasherInterface $userPasswordHasher,
+                             AppAuthenticator $appAuthenticator,
+                             EntityManagerInterface $entityManager): Response
+    {
+        if(!$this->getUser()){
+            throw new AccessDeniedHttpException('Accès refusé.');
+        }
+
+        $user = $this->getUser();
+        $form = $this->createForm(PasswordUpdateFormType::class, $user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
+        }
+
+    }
     private function addPhoto($photo, $user, $em)
     {
         $fs = new Filesystem();
