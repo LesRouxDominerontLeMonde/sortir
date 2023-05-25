@@ -230,8 +230,9 @@ class SortieController extends AbstractController
         }
 
         if ($filtreOrganisateur) {
+
             $queryBuilder->andWhere('s.organisateur = :organisateur')
-                ->setParameter('organisateur', $filtreOrganisateur);
+                ->setParameter('organisateur', $user);
         }
 
         if ($filtreInscrit) {
