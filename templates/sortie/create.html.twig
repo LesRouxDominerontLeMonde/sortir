@@ -3,8 +3,8 @@
 {% block body %}
     <h1>Créer une sortie</h1>
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
+        <div class="row justify-content-center custom-line">
+            <div class="col-6">
                 {{ form_start(form) }}
                 {{ form_widget(form)}}
                 <a href="{{ path('app_home') }}" class="btn btn-secondary">Annuler</a>
