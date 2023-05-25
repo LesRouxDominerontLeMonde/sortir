@@ -7,12 +7,12 @@ use App\Form\UpdateProfileFormType;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class UpdateProfileController extends AbstractController
@@ -20,11 +20,11 @@ class UpdateProfileController extends AbstractController
     /**
      * @Route("/update/profil", name="app_update_profil")
      */
-    public function update(Request $request,
+    public function update(Request                     $request,
                            UserPasswordHasherInterface $userPasswordHasher,
-                           UserAuthenticatorInterface $UserAuthenticator,
-                           AppAuthenticator $appAuthenticator,
-                           EntityManagerInterface $entityManager): Response
+                           UserAuthenticatorInterface  $userAuthenticator,
+                           AppAuthenticator            $appAuthenticator,
+                           EntityManagerInterface      $entityManager): Response
     {
         if(!$this->getUser()){
             throw new AccessDeniedHttpException('Accès refusé.');
@@ -32,7 +32,7 @@ class UpdateProfileController extends AbstractController
 
         $user = $this->getUser();
         $oldPassword = $user->getPassword();
-        $form = $this->createForm(UpdateProfileFormType::class, $user, []);
+        $form = $this->createForm(UpdateProfileFormType::class, $user);
 
         $form->handleRequest();
 
@@ -67,10 +67,21 @@ class UpdateProfileController extends AbstractController
                     $user->addPhoto($photoEntity);
                 }
             }
+            $entityManager->persist($user);
+            $entityManager->flush();
+            // do anything else you need here, like send an email
+
+            $this->addFlash('success', 'Votre formulaire a été soumis avec succès !');
+
+            return $userAuthenticator->authenticateUser(
+                $user,
+                $appAuthenticator,
+                $request
+            );
         }
 
         return $this->render('update_profile/index.html.twig', [
-            'controller_name' => 'UpdateProfileController',
+            'form' => $form->createView(),
         ]);
     }
 }

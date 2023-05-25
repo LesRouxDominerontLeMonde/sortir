@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Entity\User;
-use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -25,18 +24,15 @@ class UpdateProfileFormType extends AbstractType
         $builder
         ->add('pseudo', TextType::class, [
             'data' => $user->getPseudo()
-    ])
+        ])
         ->add('firstname', TextType::class, [
             'data' => $user->getFirstname(),
-            'label' => 'prénom',
         ])
         ->add('name', TextType::class, [
             'data' => $user->getName(),
-            'label' => 'nom',
         ])
         ->add('phoneNumber', TextType::class, [
             'data' => 'O'.$user->getPhoneNumber(),
-            'label' => 'téléphone',
         ])
         ->add('email', EmailType::class)
         ->add('campus', EntityType::class, [
@@ -58,12 +54,7 @@ class UpdateProfileFormType extends AbstractType
             'invalid_message' => 'Les mots de passes doivent être identiques.',
             'options' => ['attr' => ['autocomplete' => 'new-password']],
             'required' => false,
-            'first_options' => ['label' => 'Password'],
-            'second_options' => ['label' => 'Repeat Password'],
             'constraints' => [
-                new NotBlank([
-                    'message' => 'Entrer un mot de passe',
-                ]),
                 new Length([
                     'min' => 6,
                     'minMessage' => 'Votre mot de passe doit contenir au minimum {{ limit }} caractères',
@@ -72,7 +63,6 @@ class UpdateProfileFormType extends AbstractType
             ],
         ])
         ->add('photo', FileType::class, [
-            'label' => 'Image de profil',
             'required' => false,
             'mapped' => false,
         ])
