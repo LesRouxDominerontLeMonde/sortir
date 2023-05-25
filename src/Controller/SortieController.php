@@ -27,16 +27,26 @@ class SortieController extends AbstractController
     /**
      * @Route("/sorties/{id}", name="app_sortie", requirements={"id"="\d+"})
      */
-    public function index(): Response
+    public function index(Request $request, SortieRepository $sortieRepository): Response
     {
+        $id = $request->get('id');
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $participants = $sortie->getParticipants();
+        dump($sortie);
+        dump($participants);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('La sortie demandée n\'existe pas.');
+        }
+
         return $this->render('sortie/sortie.html.twig', [
-            'controller_name' => 'SortieController',
+            'sortie' => $sortie,
         ]);
     }
     /**
      * @Route("/sorties", name="app_sorties")
      */
-    public function listeSorties(Request $request, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    public function listeSorties(Request $request, SortieRepository $sortieRepository): Response
     {
         $sortie = new Sortie();
         $sorties = $sortieRepository->findAll();
@@ -138,7 +148,6 @@ class SortieController extends AbstractController
                 $this -> addFlash('danger', 'Trop tard :( Sortie complète');
                 return $this -> redirectToRoute('app_sorties', ['id' => $sortie -> getId()]);
         }
-
 
                 $inscription = new Sortie();
                 $inscription -> setUser ($this -> getUser());
