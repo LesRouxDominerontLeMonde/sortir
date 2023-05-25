@@ -37,7 +37,7 @@
         {% for participant in sortie.getParticipants %}
         <tbody>
         <tr>
-            <td>{{ participant.pseudo }}</td>
+            <td><a href="{{ path('app_profil_affiche', { id: participant.id }) }}">{{ participant.pseudo }}</a></td>
             <td>{{ participant.name | upper }} {{ participant.firstname }}</td>
         </tr>
         </tbody>

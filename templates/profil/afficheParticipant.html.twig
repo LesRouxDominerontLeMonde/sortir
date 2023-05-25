@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-5">
+            <img src="{{ asset(photo_path ~ photo) }}" alt="Photo de profil" class="img-fluid rounded-5 mx-auto my-5 d-block">
+        </div>
+        <div class="col-7">
+            <div class="container mt-5">
+                <div class="row">
+                    <h2>{{ participant.pseudo}}</h2>
+                </div>
+                <div class="row">
+                    <p class="col-2">Prénom&nbsp;:</p>
+                    <p class="col">{{participant.firstname}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-2">Nom&nbsp;:</p>
+                    <p class="col">{{participant.name}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-2">Téléphone&nbsp;:</p>
+
+                    <p class="col">0{{participant.phoneNumber}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-2">E-mail&nbsp;:</p>
+                    <p class="col">{{participant.email}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-2">Campus&nbsp;:</p>
+                    <p class="col">{{participant.campus.nom}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-1 mx-2 px-1">
+                        <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_home') }}';">Retour</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block title %}
+    Profil | {{ participant.pseudo }}
+{% endblock %}
+
