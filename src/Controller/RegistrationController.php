@@ -106,11 +106,12 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/profil/newpassword", name="app_update_password")
+     * @Route("/profil/newpassword", name="app_password_profil")
      */
     public function password(Request $request,
                              UserPasswordHasherInterface $userPasswordHasher,
-                             AppAuthenticator $appAuthenticator,
+                             UserAuthenticatorInterface $userAuthenticator,
+                             AppAuthenticator $authenticator,
                              EntityManagerInterface $entityManager): Response
     {
         if(!$this->getUser()){
@@ -129,7 +130,22 @@ class RegistrationController extends AbstractController
                     $form->get('password')->getData()
                 )
             );
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre mot de passe a été modifié avec succès !');
+
+            return $userAuthenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request
+            );
         }
+        return $this->render('registration/password.html.twig',
+        [
+            'form' => $form->createView(),
+        ]);
 
     }
     private function addPhoto($photo, $user, $em)

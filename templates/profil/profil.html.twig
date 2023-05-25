@@ -33,11 +33,14 @@
                                         <p class="col">{{app.user.campus.nom}}</p>
                                 </div>
                                 <div class="row">
-                                        <div class="col-1 mx-2 px-1">
-                                                <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_home') }}';">Retour</button>
+                                        <div class="col mx-2">
+                                               <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_home') }}';">Retour</button>
                                         </div>
-                                        <div class="col-3 mx-2 px-1">
-                                                <button class="btn btn-outline-info little" onclick="window.location.href = '{{ path('app_update_profil') }}';">Mettre à jour le profil</button>
+                                        <div class="col mx-2">
+                                                <button class="mx-2 btn btn-outline-info little" onclick="window.location.href = '{{ path('app_update_profil') }}';">Mettre à jour le profil</button>
+                                        </div>
+                                        <div class="col-4 mx-2">
+                                                <button class="mx-2 btn btn-outline-info little" onclick="window.location.href = '{{ path('app_password_profil') }}';">Mettre à jour le mot de passe</button>
                                         </div>
                                 </div>
 
