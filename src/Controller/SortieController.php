@@ -25,7 +25,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/sortie", name="app_sortie")
+     * @Route("/sorties/{id}", name="app_sortie", requirements={"id"="\d+"})
      */
     public function index(): Response
     {
@@ -185,14 +185,6 @@ class SortieController extends AbstractController
         $repository = $entityManager->getRepository(Sortie::class);
 
         $queryBuilder = $repository->createQueryBuilder('s');
-
-        dump($filtreCampus);
-        dump($filtreNom);
-        dump($filtreDebut);
-        dump($filtreArchivee);
-        dump($filtreEtat);
-        dump($filtreOrganisateur);
-        dump($filtreInscrit);
 
         // Appliquer les critères de filtrage
 

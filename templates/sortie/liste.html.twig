@@ -40,6 +40,7 @@
         </td>
         <td>{{ sortie.organisateur.pseudo  }}</td>
         <td>
+            <a href="{{ path('app_sortie', {'id': sortie.id}) }}">Afficher</a>
             {% if app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_sortie_edit',{ 'id': sortie.id }) }}">Modifier</a>&nbsp;<a href="{{ path('app_sortie_delete',{ 'id': sortie.id }) }}">Supprimer</a>
             {% endif %}
