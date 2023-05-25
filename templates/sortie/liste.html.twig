@@ -41,6 +41,12 @@
         <td>{{ sortie.organisateur.pseudo  }}</td>
         <td>
             <a href="{{ path('app_sortie', {'id': sortie.id}) }}">Afficher</a>
+            {% if sortie.etat.libelle == 'Ouverte' and sortie.finInscription < date() %}
+            <a href="{{ path('app_sortie_inscription', {'id': sortie.id}) }}">S'inscrire</a>
+            {% endif %}
+            {% if sortie.participants.contains(app.user) %}
+                <a href="{{ path('app_sortie_désinscription', {'id': sortie.id})}}">Se désinscrire</a>
+            {% endif %}
             {% if app.user.id == sortie.organisateur.id or is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_sortie_edit',{ 'id': sortie.id }) }}">Modifier</a>&nbsp;<a href="{{ path('app_sortie_delete',{ 'id': sortie.id }) }}">Supprimer</a>
             {% endif %}
